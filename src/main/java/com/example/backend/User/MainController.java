@@ -11,7 +11,7 @@ public class MainController {
     @Autowired
     private UserDao userDao;
 
-    @PostMapping(path="/register") // Map ONLY POST Requests
+    @PostMapping(path="/register")
     public @ResponseBody String addNewUser (@RequestParam String name
             , @RequestParam String password, @RequestParam String email) {
         List<User> list = userDao.getUserByname(name);

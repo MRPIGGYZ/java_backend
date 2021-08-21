@@ -1,6 +1,6 @@
 package com.example.backend.QAbot;
 
-import com.example.backend.PersonalFuncs.QuickMap;
+import com.example.backend.PersonalInterface.QuickMap;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
