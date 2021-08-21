@@ -1,5 +1,4 @@
 package com.example.backend.QAbot;
-
 import com.example.backend.PersonalInterface.BackendLogin;
 import com.example.backend.PersonalInterface.QuickMap;
 import org.springframework.http.HttpEntity;
@@ -9,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.HashMap;
 
 @Controller

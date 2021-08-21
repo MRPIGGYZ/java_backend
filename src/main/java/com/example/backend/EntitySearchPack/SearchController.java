@@ -1,12 +1,9 @@
 package com.example.backend.EntitySearchPack;
 import com.example.backend.PersonalInterface.BackendLogin;
 import com.example.backend.PersonalInterface.QuickMap;
-import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpHeaders;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,8 +12,8 @@ import java.util.HashMap;
 public class SearchController implements QuickMap, BackendLogin {
     static String id = null;
 
-    @GetMapping(path="/entity") // Map ONLY POST Requests
-    public @ResponseBody ArrayList mySearch (@RequestParam String course
+    @GetMapping(path="/entity")
+    public @ResponseBody ArrayList EntitySearch (@RequestParam String course
             , @RequestParam String searchKey) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/instanceList?course={course}&searchKey={searchKey}&id={id}";
