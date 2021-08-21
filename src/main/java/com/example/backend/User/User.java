@@ -1,19 +1,20 @@
-package com.example.backend;
+package com.example.backend.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity // This tells Hibernate to make a table out of this class
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="userid")
+    @Column(name="id")
     private Integer id;
-    @Column(name="username")
+    @Column(name="name")
     private String name;
-    @Column(name="useremail")
+    @Column(name="email")
     private String email;
-    @Column(name="userpassword")
+    @Column(name="password")
     private String password;
     public Integer getId() {
         return id;
@@ -29,7 +30,7 @@ public class User {
 
     public void init(String name, String password, String email) {
         this.name = name;
-        this.password = password;
+        this.password = password; // 之后会增加密码加密，暂时直接存储
         this.email = email;
     }
 
