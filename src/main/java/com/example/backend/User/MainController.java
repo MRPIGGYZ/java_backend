@@ -37,6 +37,8 @@ public class MainController {
     public @ResponseBody String userLogin (@RequestParam String name
             , @RequestParam String password) {
         List<User> list = userDao.getUserByname(name);
+        System.out.println(name);
+        System.out.println(password);
         if (list.isEmpty()) {
             return "未找到用户名";
         } else if (!list.get(0).getPassword().equals(password)) {
