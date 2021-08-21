@@ -1,9 +1,8 @@
 package com.example.backend.User;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity // This tells Hibernate to make a table out of this class
+@Entity
 @Table(name = "users")
 public class User implements Serializable {
     @Id
@@ -30,7 +29,7 @@ public class User implements Serializable {
 
     public void init(String name, String password, String email) {
         this.name = name;
-        this.password = password; // 之后会增加密码加密，暂时直接存储
+        this.password = password;
         this.email = email;
     }
 
@@ -45,7 +44,8 @@ public class User implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-    @Override
+
+    @Override //这个基本只有调试时使用
     public String toString() {
         return "Users [userid=" + id + ", username=" + name + ", email=" + email + "]";
     }

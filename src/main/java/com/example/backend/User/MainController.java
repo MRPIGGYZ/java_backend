@@ -1,8 +1,8 @@
 package com.example.backend.User;
+import com.example.backend.PassWordEncoder.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Controller
@@ -17,6 +17,7 @@ public class MainController {
         List<User> list = userDao.getUserByname(name);
         if (list.isEmpty()) {
             User n = new User();
+            password = PasswordEncoder.encode(password);
             n.init(name, password, email);
             userDao.save(n);
             return "注册成功";
@@ -39,7 +40,7 @@ public class MainController {
         List<User> list = userDao.getUserByname(name);
         if (list.isEmpty()) {
             return "未找到用户名";
-        } else if (!list.get(0).getPassword().equals(password)) {
+        } else if (!PasswordEncoder.matches(password, list.get(0).getPassword())) {
             return "密码错误";
         } else {
             return "登录成功";

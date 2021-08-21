@@ -1,5 +1,4 @@
 package com.example.backend.PersonalInterface;
-
 import java.util.HashMap;
 
 public interface QuickMap {
