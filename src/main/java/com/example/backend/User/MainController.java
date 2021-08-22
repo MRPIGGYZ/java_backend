@@ -25,6 +25,19 @@ public class MainController {
             return "用户名已存在";
         }
     }
+    @PostMapping(path="/editpassword")
+    public @ResponseBody String editInfo (@RequestParam String name, @RequestParam String oldpassword
+            , @RequestParam String newpassword) {
+        List<User> list = userDao.getUserByname(name);
+        if (!PasswordEncoder.matches(oldpassword, list.get(0).getPassword())) {
+            return "密码错误";
+        } else {
+            User user = list.get(0);
+            user.setPassword(PasswordEncoder.encode(newpassword));
+            userDao.save(user);
+            return "修改成功";
+        }
+    }
     @DeleteMapping(path="/deleteuser")
     public @ResponseBody String deleteUser (@RequestParam String name) {
         if (!userDao.getUserByname(name).isEmpty()) {

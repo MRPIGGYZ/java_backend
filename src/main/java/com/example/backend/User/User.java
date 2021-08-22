@@ -44,6 +44,10 @@ public class User implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 
     @Override //这个基本只有调试时使用
     public String toString() {
