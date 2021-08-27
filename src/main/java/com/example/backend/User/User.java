@@ -57,8 +57,18 @@ public class User implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
-
+    public String getExerciseSHistory () {
+        return this.exerciseSHistory;
+    }
+    public void setExerciseSHistory (String exerciseSHistory) {
+        this.exerciseSHistory = exerciseSHistory;
+    }
+    public String getEntitySHistory () {
+        return this.entitySHistory;
+    }
+    public void setEntitySHistory (String entitySHistory) {
+        this.entitySHistory = entitySHistory;
+    }
     @Override //这个基本只有调试时使用
     public String toString() {
         return "Users [userid=" + id + ", username=" + name + ", email=" + email + "]";

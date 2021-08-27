@@ -101,19 +101,16 @@ public class MainController {
     @PassToken
     @GetMapping(path="/findbyid")
     public @ResponseBody Iterable<User> getUsersbyId(@RequestParam Integer id) {
-        List<User> list = userDao.getUserById(id);
-        return list;
+        return userDao.getUserById(id);
     }
     @PassToken
     @GetMapping(path="/findbyemail")
     public @ResponseBody Iterable<User> getUsersbyEmail(@RequestParam String email) {
-        List<User> list = userDao.getUserByemail(email);
-        return list;
+        return userDao.getUserByemail(email);
     }
     @PassToken
     @GetMapping(path="/findbypassword")
     public @ResponseBody Iterable<User> getUsersbyPassword(@RequestParam String password) {
-        List<User> list = userDao.getUserBypassword(password);
-        return list;
+        return userDao.getUserBypassword(password);
     }
 }
