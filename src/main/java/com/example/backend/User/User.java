@@ -21,6 +21,8 @@ public class User implements Serializable {
     private String entitySHistory;
     @Column(name="exerciseSHistory")
     private String exerciseSHistory;
+    @Column(name="token")
+    private String token;
     public Integer getId() {
         return id;
     }
@@ -38,7 +40,9 @@ public class User implements Serializable {
         this.password = password;
         this.email = email;
     }
-
+    public void setToken(String token) {
+        this.token = token;
+    }
     public String getEmail() {
         return email;
     }
