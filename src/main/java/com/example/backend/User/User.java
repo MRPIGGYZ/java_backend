@@ -1,6 +1,8 @@
 package com.example.backend.User;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.Queue;
 
 @Entity
 @Table(name = "users")
@@ -15,6 +17,12 @@ public class User implements Serializable {
     private String email;
     @Column(name="password")
     private String password;
+    @Column(name="entitySHistory")
+    private String entitySHistory;
+    @Column(name="exerciseSHistory")
+    private String exerciseSHistory;
+    @Column(name="token")
+    private String token;
     public Integer getId() {
         return id;
     }
@@ -32,7 +40,9 @@ public class User implements Serializable {
         this.password = password;
         this.email = email;
     }
-
+    public void setToken(String token) {
+        this.token = token;
+    }
     public String getEmail() {
         return email;
     }
@@ -44,7 +54,21 @@ public class User implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public String getExerciseSHistory () {
+        return this.exerciseSHistory;
+    }
+    public void setExerciseSHistory (String exerciseSHistory) {
+        this.exerciseSHistory = exerciseSHistory;
+    }
+    public String getEntitySHistory () {
+        return this.entitySHistory;
+    }
+    public void setEntitySHistory (String entitySHistory) {
+        this.entitySHistory = entitySHistory;
+    }
     @Override //这个基本只有调试时使用
     public String toString() {
         return "Users [userid=" + id + ", username=" + name + ", email=" + email + "]";
