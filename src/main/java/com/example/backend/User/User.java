@@ -1,6 +1,8 @@
 package com.example.backend.User;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.Queue;
 
 @Entity
 @Table(name = "users")
@@ -15,6 +17,10 @@ public class User implements Serializable {
     private String email;
     @Column(name="password")
     private String password;
+    @Column(name="entitySHistory")
+    private String entitySHistory;
+    @Column(name="exerciseSHistory")
+    private String exerciseSHistory;
     public Integer getId() {
         return id;
     }
