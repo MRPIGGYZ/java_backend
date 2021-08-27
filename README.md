@@ -24,3 +24,18 @@
      127.0.0.1:8010/entity/course，方法为GET，所需参数为String name和String course，返回HashMap。
      127.0.0.1:8010/entity/ncourse，因未知原因暂无法使用，方法为GET，所需参数为String name，返回HashMap。
 
+2021.8.27更新
+     下面列举了所有当前称得上完善的接口，可放（）心（）使用，相对不完善的接口我会在8.28-8.29完成并更新，上文内容请直接忽视。所有POST请求请用x-www-form-urlencoded并把参数放在body内。GET请求随意。获取的json请求里面内容比较清晰且简单，所以就不具体列举了，输出出来看一下就行。
+     
+     用户部分
+     注册：无需token，java.mrpiggyz.ltd:8080/user/register，方法为POST，所需参数为String name，String password和String email。返回json。
+     登录：无需token，java.mrpiggyz.ltd:8080/user/login，方法为POST，所需参数为String name和String password。返回json，内含token，请记录下此token，并在访问需要token的接口时将token放入header中，因为token代表着发送请求的前端账号。token会在60小时后失效，若在此期修改密码，请重新登录（后续会优化）。只要进行了登录，token就会发生变化，请记录下最新token。
+     删除：需要token，java.mrpiggyz.ltd:8080/user/deleteuser，方法为DELETE，所需参数为token对应账号的密码String password。返回json。
+     
+     实体搜索
+     搜索：需要token，java.mrpiggyz.ltd:8080/entitysearch，方法为GET，所需参数为String course和String searchKey。返回json。（然而目前openedu这个接口挂了）
+     调用搜索记录：需要token，java.mrpiggyz.ltd:8080/entitysearch/history，方法为GET，无需参数。返回json，内含最近十条实体搜索记录。
+     
+     习题搜索
+     搜索：需要token，java.mrpiggyz.ltd:8080/exercisessearch，方法为GET，所需参数为String uriName。返回json。
+     调用搜索记录：需要token，java.mrpiggyz.ltd:8080/exercisessearch/history，方法为GET，无需参数。返回json，内含最近十条实体搜索记录。
