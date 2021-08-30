@@ -1,5 +1,7 @@
 package com.example.backend.QuestionSearchPack;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.backend.PersonalInterface.BackendLogin;
 import com.example.backend.PersonalInterface.QuickMap;
@@ -15,10 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping(path="/questionListByUriName")
-public class QuestionSearchController implements QuickMap, BackendLogin {
+public class QuestionSearchController implements QuickMap, BackendLogin, QuestionFilter {
     static String id = null;
     @Autowired
     private UserDao userDao;
@@ -34,8 +37,10 @@ public class QuestionSearchController implements QuickMap, BackendLogin {
         String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/questionListByUriName?uriName={uriName}&id={id}";
         if (id == null) id = BackendLogin.getOpeneduID();
         JSONObject response = restTemplate.getForObject(url, JSONObject.class, QuickMap.createMap("uriName", uriName, "id", id));
+        JSONArray ja = (JSONArray) JSON.toJSON(response.get("data"));
+        JSONArray afterDrop = DropNChoice(ja);
         returnValue.put("status", true);
-        returnValue.put("data", response.get("data"));
+        returnValue.put("data", afterDrop);
         return returnValue;
     }
     @GetMapping(path="/history")
