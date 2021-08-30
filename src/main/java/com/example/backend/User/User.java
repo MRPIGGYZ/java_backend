@@ -21,8 +21,13 @@ public class User implements Serializable {
     private String entitySHistory;
     @Column(name="exerciseSHistory")
     private String exerciseSHistory;
+    @Column(name="faults")
+    private String faults;
+    @Column(name="stars")
+    private String stars;
     @Column(name="token")
     private String token;
+    
     public Integer getId() {
         return id;
     }

@@ -11,7 +11,7 @@ public interface BackendLogin {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://open.edukg.cn/opedukg/api/typeAuth/user/login";
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity entity = new HttpEntity(QuickMap.createMap("password", "13603959776Zhp", "phone", "18839551859"), headers);
+        HttpEntity entity = new HttpEntity(QuickMap.createMap("password", "zhe4gemima", "phone", "18839551859"), headers);
         ResponseEntity response = null;
         try {
             response = restTemplate.exchange(url, HttpMethod.POST, entity, HashMap.class);
