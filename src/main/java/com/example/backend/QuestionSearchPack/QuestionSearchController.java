@@ -1,4 +1,4 @@
-package com.example.backend.ExercisesSearchPack;
+package com.example.backend.QuestionSearchPack;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.backend.PersonalInterface.BackendLogin;
@@ -15,11 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 
 @Controller
-@RequestMapping(path="/exercisessearch")
-public class ExercisesController implements QuickMap, BackendLogin {
+@RequestMapping(path="/questionListByUriName")
+public class QuestionSearchController implements QuickMap, BackendLogin {
     static String id = null;
     @Autowired
     private UserDao userDao;

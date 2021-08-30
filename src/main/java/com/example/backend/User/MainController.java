@@ -40,6 +40,7 @@ public class MainController {
     @PostMapping(path="/editpassword")
     public @ResponseBody JSONObject editInfo (HttpServletRequest req, @RequestParam String oldpassword
             , @RequestParam String newpassword) {
+        System.out.println("未登录");
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
