@@ -1,4 +1,6 @@
 package com.example.backend.User;
+import com.alibaba.fastjson.JSONObject;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -73,6 +75,13 @@ public class User implements Serializable {
     }
     public void setEntitySHistory (String entitySHistory) {
         this.entitySHistory = entitySHistory;
+    }
+    public String getCollection () {
+        return this.stars;
+    }
+    public void setCollection (String newstars) {
+        this.stars = newstars;
+//        this.stars = null;
     }
     @Override //这个基本只有调试时使用
     public String toString() {

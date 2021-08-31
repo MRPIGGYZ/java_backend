@@ -2,8 +2,10 @@ package com.example.backend.GetInstanceByUriPack;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.backend.FaultsCollectionsHandler.FCController;
 import com.example.backend.PersonalInterface.BackendLogin;
 import com.example.backend.PersonalInterface.QuickMap;
+import com.example.backend.User.User;
 import com.example.backend.User.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -23,16 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(path="/getInstanceByUri")
 public class GetInstanceByUri implements GetCourseName {
     static String id = null;
-    @Autowired
-    private UserDao userDao;
     @GetMapping(path="")
     public @ResponseBody JSONObject GetInstance (HttpServletRequest req, @RequestParam String uri) {
-        String name = (String) req.getAttribute("userName");
         JSONObject returnValue = new JSONObject();
         String course = GetCourseNameInUri(uri);
-//        User user = userDao.getUserByname(name).get(0);
-//        user.setExerciseSHistory(StringAndQueue.appendFromString(uriName, user.getExerciseSHistory()));
-//        userDao.save(user);
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/getKnowledgeCard";

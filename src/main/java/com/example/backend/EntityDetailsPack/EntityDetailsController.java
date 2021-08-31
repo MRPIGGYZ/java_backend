@@ -7,12 +7,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping(path="/infoByInstanceName")
-public class EntityDetailsController implements QuickMap, BackendLogin {
+public class EntityDetailsController {
     static String id = null;
     @GetMapping(path="")
-    public @ResponseBody JSONObject EntityDetails (@RequestParam String course
+    public @ResponseBody JSONObject EntityDetails (HttpServletRequest req, @RequestParam String course
             , @RequestParam String name) {
         RestTemplate restTemplate = new RestTemplate();
         JSONObject returnValue = new JSONObject();

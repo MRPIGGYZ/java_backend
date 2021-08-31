@@ -51,4 +51,23 @@ public class QuestionSearchController implements QuickMap, BackendLogin, Questio
         returnValue.put("data", StringAndQueue.getArrFromString(user.getExerciseSHistory()));
         return returnValue;
     }
+    public static JSONObject GetSperQuestion (String searchkey, String ID) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/questionListByUriName?uriName={uriName}&id={id}";
+        if (id == null) id = BackendLogin.getOpeneduID();
+        JSONObject response = restTemplate.getForObject(url, JSONObject.class, QuickMap.createMap("uriName", searchkey, "id", id));
+        JSONArray ja = (JSONArray) JSON.toJSON(response.get("data"));
+        System.out.println("received");
+        for (int i=0; i<ja.size(); i++) {
+            JSONObject thisone = (JSONObject) ja.get(i);
+            if (thisone.get("id").toString().equals(ID)) {
+                try {
+                    return QuestionFilter.QuestDivision(thisone);
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
 }
