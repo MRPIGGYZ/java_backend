@@ -1,51 +1,42 @@
-package com.example.backend.FaultsCollectionsHandler;
+package com.example.backend.UserQuestionPack;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.example.backend.PersonalInterface.BackendLogin;
-import com.example.backend.PersonalInterface.QuickMap;
-import com.example.backend.QuestionSearchPack.QuestionSearchController;
+import com.example.backend.QuestionSearchPack.QuestionFilter;
 import com.example.backend.User.User;
 import com.example.backend.User.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 @Controller
-@RequestMapping(path="/collect")
-public class FCController {
-    static String id = null;
+@RequestMapping(path="/question/collection")
+public class QuestionCollectController {
     @Autowired
     private UserDao userDao;
     @GetMapping(path="/save")
-    public @ResponseBody JSONObject Collect (HttpServletRequest req, @RequestParam String searchkey, @RequestParam String id) {
-//        System.out.println(question);
+    public @ResponseBody JSONObject Collect (HttpServletRequest req, @RequestParam String qAnswer, @RequestParam String id, @RequestParam String qBody) {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-        String collections = user.getCollection();
+        String collections = user.getQuestionCollection();
         if (collections == null || collections.equals("")) {
-            collections = searchkey + "%%" + id;
+            collections = qAnswer + "%%" + id + "%%" + qBody;
         } else {
-            collections = searchkey + "%%" + id + "##" + collections;
+            collections = qAnswer + "%%" + id + "%%" + qBody + "##" + collections;
         }
-        user.setCollection(collections);
+        user.setQuestionCollection(collections);
         userDao.save(user);
         returnValue.put("status", true);
         return returnValue;
     }
-    @GetMapping(path="/removecollection")
+    @GetMapping(path="/remove")
     public @ResponseBody JSONObject CancelCollect (HttpServletRequest req, @RequestParam String id) {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-        String[] collections = user.getCollection().split("##");
+        String[] collections = user.getQuestionCollection().split("##");
         String afterDelete = "";
         for (String i : collections) {
             if (i.contains(id)) {
@@ -54,28 +45,31 @@ public class FCController {
             afterDelete = afterDelete + i + "##";
         }
         if (!afterDelete.equals("")) afterDelete.substring(0, afterDelete.length()-2);
-        user.setCollection(afterDelete);
+        user.setQuestionCollection(afterDelete);
         userDao.save(user);
         returnValue.put("status", true);
         return returnValue;
     }
-    @GetMapping(path="/getcollections")
+    @GetMapping(path="/getall")
     public @ResponseBody JSONObject GetCollectionList (HttpServletRequest req) {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-        try {
-            String[] collections = user.getCollection().split("##");
+            String[] collections = user.getQuestionCollection().split("##");
             JSONArray data = new JSONArray();
             for (String i : collections) {
-                String[] tmp = i.split("%%");
-                System.out.println(i);
-                data.add(QuestionSearchController.GetSperQuestion(tmp[0], tmp[1]));
+                try {
+                    JSONObject obj = new JSONObject();
+                    String[] tmp = i.split("%%");
+                    obj.put("qAnswer", tmp[0]);
+                    obj.put("id", tmp[1]);
+                    obj.put("qBody", tmp[2]);
+                    data.add(QuestionFilter.QuestDivision(obj));
+                } catch (Exception e) {
+                    continue;
+                }
             }
             returnValue.put("data", data);
-        } catch (Exception e) {
-            returnValue.put("data", "[]");
-        }
         returnValue.put("status", true);
         return returnValue;
     }

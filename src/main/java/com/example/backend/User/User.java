@@ -1,10 +1,7 @@
 package com.example.backend.User;
-import com.alibaba.fastjson.JSONObject;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.Queue;
 
 @Entity
 @Table(name = "users")
@@ -19,14 +16,20 @@ public class User implements Serializable {
     private String email;
     @Column(name="password")
     private String password;
-    @Column(name="entitySHistory")
-    private String entitySHistory;
-    @Column(name="exerciseSHistory")
-    private String exerciseSHistory;
-    @Column(name="faults")
-    private String faults;
-    @Column(name="stars")
-    private String stars;
+    @Column(name="questionSearchHistory")
+    private String questionSearchHistory;
+    @Column(name="questionFaults")
+    private String questionFaults;
+    @Column(name="questionCollection")
+    private String questionCollection;
+    @Column(name="questionHistory")
+    private String questionHistory;
+    @Column(name="entitySearchHistory")
+    private String entitySearchHistory;
+    @Column(name="entityCollection")
+    private String entityCollection;
+    @Column(name="entityHistory")
+    private String entityHistory;
     @Column(name="token")
     private String token;
     
@@ -53,36 +56,49 @@ public class User implements Serializable {
     public String getEmail() {
         return email;
     }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getPassword() {
         return password;
     }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
     public void setPassword(String password) {
         this.password = password;
     }
-    public String getExerciseSHistory () {
-        return this.exerciseSHistory;
+
+    public String getQuestionSearchHistory () {
+        return this.questionSearchHistory;
     }
-    public void setExerciseSHistory (String exerciseSHistory) {
-        this.exerciseSHistory = exerciseSHistory;
+    public void setQuestionSearchHistory (String questionSearchHistory) {
+        this.questionSearchHistory = questionSearchHistory;
     }
-    public String getEntitySHistory () {
-        return this.entitySHistory;
+    public String getQuestionCollection () {
+        return this.questionCollection;
     }
-    public void setEntitySHistory (String entitySHistory) {
-        this.entitySHistory = entitySHistory;
+    public void setQuestionCollection (String questionCollection) {
+        this.questionCollection = questionCollection;
     }
-    public String getCollection () {
-        return this.stars;
+    public String getQuestionFaults () {
+        return this.questionFaults;
     }
-    public void setCollection (String newstars) {
-        this.stars = newstars;
-//        this.stars = null;
+    public void setQuestionFaults (String questionFaults) {
+        this.questionFaults = questionFaults;
     }
+    public String getQuestionHistory () {
+        return this.questionHistory;
+    }
+    public void setQuestionHistory (String questionHistory) {
+        this.questionHistory = questionHistory;
+    }
+
+    public String getEntitySearchHistory () {
+        return this.entitySearchHistory;
+    }
+    public void setEntitySearchHistory (String entitySearchHistory) {
+        this.entitySearchHistory = entitySearchHistory;
+    }
+
     @Override //这个基本只有调试时使用
     public String toString() {
         return "Users [userid=" + id + ", username=" + name + ", email=" + email + "]";

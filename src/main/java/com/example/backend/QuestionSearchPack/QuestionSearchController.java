@@ -31,7 +31,7 @@ public class QuestionSearchController implements QuickMap, BackendLogin, Questio
         String name = (String) req.getAttribute("userName");
         JSONObject returnValue = new JSONObject();
         User user = userDao.getUserByname(name).get(0);
-        user.setExerciseSHistory(StringAndQueue.appendFromString(uriName, user.getExerciseSHistory()));
+        user.setQuestionSearchHistory(StringAndQueue.appendFromString(uriName, user.getQuestionSearchHistory()));
         userDao.save(user);
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/questionListByUriName?uriName={uriName}&id={id}";
@@ -48,7 +48,7 @@ public class QuestionSearchController implements QuickMap, BackendLogin, Questio
         JSONObject returnValue = new JSONObject();
         User user = userDao.getUserByname((String) req.getAttribute("userName")).get(0);
         returnValue.put("status", true);
-        returnValue.put("data", StringAndQueue.getArrFromString(user.getExerciseSHistory()));
+        returnValue.put("data", StringAndQueue.getArrFromString(user.getQuestionSearchHistory()));
         return returnValue;
     }
     public static JSONObject GetSperQuestion (String searchkey, String ID) {
