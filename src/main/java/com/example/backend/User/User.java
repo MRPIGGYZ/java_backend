@@ -98,6 +98,18 @@ public class User implements Serializable {
     public void setEntitySearchHistory (String entitySearchHistory) {
         this.entitySearchHistory = entitySearchHistory;
     }
+    public String getEntityCollection () {
+        return this.entityCollection;
+    }
+    public void setEntityCollection (String entityCollection) {
+        this.entityCollection = entityCollection;
+    }
+    public String getEntityHistory () {
+        return this.entityHistory;
+    }
+    public void setEntityHistory (String entityHistory) {
+        this.entityHistory = entityHistory;
+    }
 
     @Override //这个基本只有调试时使用
     public String toString() {

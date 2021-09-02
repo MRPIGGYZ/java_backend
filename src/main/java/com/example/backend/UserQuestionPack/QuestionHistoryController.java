@@ -79,7 +79,7 @@ public class QuestionHistoryController {
         return returnValue;
     }
     @GetMapping(path="/removeall")
-    public @ResponseBody JSONObject DeleteAllHistory (HttpServletRequest req, @RequestParam String id) {
+    public @ResponseBody JSONObject DeleteAllHistory (HttpServletRequest req) {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);

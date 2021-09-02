@@ -15,54 +15,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping(path="/entity/collection")
-public class EntityCollecController {
+@RequestMapping(path="/entity/history")
+public class EntityHistoryController {
     @Autowired
     private UserDao userDao;
-    @GetMapping(path="/save")
-    public @ResponseBody
-    JSONObject Collect (HttpServletRequest req, @RequestParam String course, @RequestParam String label, @RequestParam String category, @RequestParam String uri) {
+    @GetMapping(path="/removeall")
+    public @ResponseBody JSONObject DeleteAllHistory (HttpServletRequest req) {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-        String collections = user.getEntityCollection();
-        if (collections == null || collections.equals("")) {
-            collections = course + "%%" + label + "%%" + category + "%%" + uri;
-        } else {
-            collections = course + "%%" + label + "%%" + category + "%%" + uri + "##" + collections;
-        }
-        user.setEntityCollection(collections);
-        userDao.save(user);
-        returnValue.put("status", true);
-        return returnValue;
-    }
-    @GetMapping(path="/remove")
-    public @ResponseBody JSONObject CancelCollect (HttpServletRequest req, @RequestParam String label) {
-        JSONObject returnValue = new JSONObject();
-        String name = (String) req.getAttribute("userName");
-        User user = userDao.getUserByname(name).get(0);
-        String[] collections = user.getEntityCollection().split("##");
-        String afterDelete = "";
-        for (String i : collections) {
-            if (i.equals(label)) {
-                continue;
-            }
-            afterDelete = afterDelete + i + "##";
-        }
-        if (!afterDelete.equals("")) afterDelete.substring(0, afterDelete.length()-2);
-        user.setEntityCollection(afterDelete);
+        user.setEntityHistory("");
         userDao.save(user);
         returnValue.put("status", true);
         return returnValue;
     }
     @GetMapping(path="/getall")
-    public @ResponseBody JSONObject GetCollectionList (HttpServletRequest req) {
+    public @ResponseBody JSONObject GetEntityHistoryList (HttpServletRequest req) {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-        String[] collections = user.getEntityCollection().split("##");
+        String[] history = user.getEntityHistory().split("##");
         JSONArray data = new JSONArray();
-        for (String i : collections) {
+        for (String i : history) {
             System.out.println();
             try {
                 JSONObject obj = new JSONObject();
