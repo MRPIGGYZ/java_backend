@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 public interface QuestionFilter {
-    default JSONArray DropNChoice(JSONArray originList) {
+    static JSONArray DropNChoice(JSONArray originList) {
         JSONArray returnValue = new JSONArray();
         for (int i=0; i<originList.size(); i++) {
             try {
@@ -18,7 +18,7 @@ public interface QuestionFilter {
     static JSONObject QuestDivision(JSONObject thisone) throws Exception {
         String qAnswer = thisone.get("qAnswer").toString();
         String qBody = thisone.get("qBody").toString();
-        if (qAnswer.equals("D")||qAnswer.equals("C")||qAnswer.equals("B")||qAnswer.equals("A")) {
+        if (qAnswer.contains("D")||qAnswer.contains("C")||qAnswer.contains("B")||qAnswer.contains("A")) {
             Integer indexofA, indexofB, indexofC, indexofD;
             indexofA = qBody.indexOf("A．");
             if (indexofA == -1) {
