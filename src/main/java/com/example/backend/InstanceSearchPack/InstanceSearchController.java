@@ -25,14 +25,19 @@ public class InstanceSearchController implements QuickMap, BackendLogin {
         String name = (String) req.getAttribute("userName");
         JSONObject returnValue = new JSONObject();
         User user = userDao.getUserByname(name).get(0);
-        user.setEntitySHistory(StringAndQueue.appendFromString(searchKey, user.getEntitySHistory()));
+        user.setEntitySearchHistory(StringAndQueue.appendFromString(searchKey, user.getEntitySearchHistory()));
         userDao.save(user);
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/instanceList?course={course}&searchKey={searchKey}&id={id}";
         if (id == null) id = BackendLogin.getOpeneduID();
         JSONObject response = restTemplate.getForObject(url, JSONObject.class, QuickMap.createMap("course", course, "searchKey", searchKey, "id", id));
-        returnValue.put("status", true);
-        returnValue.put("data", response.get("data"));
+        try{
+            returnValue.put("status", true);
+            returnValue.put("data", response.get("data"));
+        } catch (Exception e) {
+            returnValue.put("status", false);
+            returnValue.put("data", "openedu break down");
+        }
         return returnValue;
     }
 
@@ -41,7 +46,7 @@ public class InstanceSearchController implements QuickMap, BackendLogin {
         JSONObject returnValue = new JSONObject();
         User user = userDao.getUserByname((String) req.getAttribute("userName")).get(0);
         returnValue.put("status", true);
-        returnValue.put("data", StringAndQueue.getArrFromString(user.getEntitySHistory()));
+        returnValue.put("data", StringAndQueue.getArrFromString(user.getEntitySearchHistory()));
         return returnValue;
     }
 }

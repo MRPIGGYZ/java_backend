@@ -37,15 +37,17 @@ public class QABotController implements QuickMap, BackendLogin {
                 returnValue.put("status", false);
                 return returnValue;
             }
+            JSONObject data = JSON.parseObject(response.getBody().toString());
+            JSONArray res = (JSONArray) (data.get("data"));
+            data = (JSONObject) res.get(0);
+            returnValue.put("data", data.get("value"));
+            returnValue.put("status", true);
         } catch (Exception e) {
             returnValue.put("status", false);
+            returnValue.put("data", "openedu break down!");
             return returnValue;
         }
-        JSONObject data = JSON.parseObject(response.getBody().toString());
-        JSONArray res = (JSONArray) (data.get("data"));
-        data = (JSONObject) res.get(0);
-        returnValue.put("status", true);
-        returnValue.put("data", data.get("value"));
+
         return returnValue;
     }
 }

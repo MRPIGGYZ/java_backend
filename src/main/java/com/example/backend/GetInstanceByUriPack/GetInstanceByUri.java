@@ -1,7 +1,6 @@
-package com.example.backend.LinkInstancePack;
+package com.example.backend.GetInstanceByUriPack;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.backend.JwtUtils.PassToken;
 import com.example.backend.PersonalInterface.BackendLogin;
@@ -19,37 +18,36 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 
+// 这个接口大概率不直接使用
 @Controller
-@RequestMapping(path="/linkInstance")
-public class linkInstanceController {
+@RequestMapping(path="/getInstanceByUri")
+public class GetInstanceByUri implements GetCourseName {
     static String id = null;
     @GetMapping(path="")
-    public @ResponseBody
-    JSONObject linkInstance (HttpServletRequest req, @RequestParam String context
-            , @RequestParam String course) {
+    public @ResponseBody JSONObject GetInstance (HttpServletRequest req, @RequestParam String uri) {
         JSONObject returnValue = new JSONObject();
         try {
-            JSONArray data = getLinkedInfo(context, course);
+            JSONObject data = GetRawData(uri);
             returnValue.put("status", true);
             returnValue.put("data", data);
         } catch (Exception e) {
-            returnValue.put("status", false);
+            returnValue.put("status", true);
             returnValue.put("data", "openedu break down");
         }
         return returnValue;
     }
     @PassToken
-    public static JSONArray getLinkedInfo (String context, String course) {
+    public static JSONObject GetRawData(String uri) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/linkInstance";
         HttpHeaders headers = new HttpHeaders();
+        String course = GetCourseName.GetCourseNameInUri(uri);
+        String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/getKnowledgeCard";
         if (id == null) id = BackendLogin.getOpeneduID();
-        HttpEntity entity = new HttpEntity(QuickMap.createMap("context", context, "course", course, "id", id), headers);
-        ResponseEntity response = null;
+        HttpEntity entity = new HttpEntity(QuickMap.createMap("course", course, "uri", uri, "id", id), headers);
+        ResponseEntity response = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
         try {
-            response = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
-            JSONObject data = (JSONObject) JSON.parseObject(response.getBody().toString()).get("data");
-            return data.getJSONArray("results");
+            JSONObject data = JSON.parseObject(response.getBody().toString());
+            return data.getJSONObject("data");
         } catch (Exception e) {
             throw e;
         }
