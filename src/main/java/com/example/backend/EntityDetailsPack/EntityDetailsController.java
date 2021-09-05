@@ -29,23 +29,28 @@ public class EntityDetailsController implements SimplifyData {
         String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/infoByInstanceName?course={course}&name={name}&id={id}";
         if (id == null) id = BackendLogin.getOpeneduID();
         JSONObject response = restTemplate.getForObject(url, JSONObject.class, QuickMap.createMap("course", course, "name", name, "id", id));
-        JSONObject gooddata = GetInstanceByUri.GetRawData(uri);
-        JSONObject data = (JSONObject) JSON.toJSON(response.get("data"));
-        data = Simplify(data, gooddata);
+        try {
+            JSONObject gooddata = GetInstanceByUri.GetRawData(uri);
+            JSONObject data = (JSONObject) JSON.toJSON(response.get("data"));
+            System.out.println(gooddata);
+            data = Simplify(data, gooddata);
+            String username = (String) req.getAttribute("userName");
+            User user = userDao.getUserByname(username).get(0);
+            String history = user.getEntityHistory();
+            if (history == null || history.equals("")) {
+                history = course + "%%" + name + "%%" + data.get("entity_type") + "%%" + uri;
+            } else {
+                history = course + "%%" + name + "%%" + data.get("entity_type") + "%%" + uri + "##" + history;
+            }
+            user.setEntityHistory(history);
+            userDao.save(user);
 
-        String username = (String) req.getAttribute("userName");
-        User user = userDao.getUserByname(username).get(0);
-        String history = user.getEntityHistory();
-        if (history == null || history.equals("")) {
-            history = course + "%%" + name + "%%" + data.get("entity_type") + "%%" + uri;
-        } else {
-            history = course + "%%" + name + "%%" + data.get("entity_type") + "%%" + uri + "##" + history;
+            returnValue.put("status", true);
+            returnValue.put("data", data);
+        } catch (Exception e) {
+            returnValue.put("status", false);
+            returnValue.put("data", "openedu break down");
         }
-        user.setEntityHistory(history);
-        userDao.save(user);
-
-        returnValue.put("status", true);
-        returnValue.put("data", data);
         return returnValue;
     }
 

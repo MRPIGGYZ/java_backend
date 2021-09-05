@@ -31,8 +31,13 @@ public class InstanceSearchController implements QuickMap, BackendLogin {
         String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/instanceList?course={course}&searchKey={searchKey}&id={id}";
         if (id == null) id = BackendLogin.getOpeneduID();
         JSONObject response = restTemplate.getForObject(url, JSONObject.class, QuickMap.createMap("course", course, "searchKey", searchKey, "id", id));
-        returnValue.put("status", true);
-        returnValue.put("data", response.get("data"));
+        try{
+            returnValue.put("status", true);
+            returnValue.put("data", response.get("data"));
+        } catch (Exception e) {
+            returnValue.put("status", false);
+            returnValue.put("data", "openedu break down");
+        }
         return returnValue;
     }
 

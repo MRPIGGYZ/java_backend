@@ -26,9 +26,14 @@ public class GetInstanceByUri implements GetCourseName {
     @GetMapping(path="")
     public @ResponseBody JSONObject GetInstance (HttpServletRequest req, @RequestParam String uri) {
         JSONObject returnValue = new JSONObject();
-        JSONObject data = GetRawData(uri);
-        returnValue.put("status", true);
-        returnValue.put("data", data);
+        try {
+            JSONObject data = GetRawData(uri);
+            returnValue.put("status", true);
+            returnValue.put("data", data);
+        } catch (Exception e) {
+            returnValue.put("status", true);
+            returnValue.put("data", "openedu break down");
+        }
         return returnValue;
     }
     @PassToken
@@ -40,11 +45,11 @@ public class GetInstanceByUri implements GetCourseName {
         if (id == null) id = BackendLogin.getOpeneduID();
         HttpEntity entity = new HttpEntity(QuickMap.createMap("course", course, "uri", uri, "id", id), headers);
         ResponseEntity response = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
-        JSONObject data = JSON.parseObject(response.getBody().toString());
         try {
+            JSONObject data = JSON.parseObject(response.getBody().toString());
             return data.getJSONObject("data");
         } catch (Exception e) {
-            return data;
+            throw e;
         }
     }
 }
