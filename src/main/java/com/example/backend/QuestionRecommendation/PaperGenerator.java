@@ -3,7 +3,7 @@ package com.example.backend.QuestionRecommendation;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.backend.LinkInstancePack.linkInstanceController;
-import com.example.backend.PersonalInterface.GetRandomSubArray;
+import com.example.backend.PersonalInterface.GetSubArray;
 import com.example.backend.QuestionSearchPack.QuestionSearchController;
 import com.example.backend.User.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +47,11 @@ public class PaperGenerator {
             returnValue.put("data", "您搜索的知识点似乎有点冷门，尝试再加一些关键词或换一个科目搜索吧");
         } else if (qlist.size() < 10) {
             returnValue.put("status", true);
-            returnValue.put("data", GetRandomSubArray.getRandomArray(qlist, qlist.size()));
+            returnValue.put("data", GetSubArray.getRandomArray(qlist, qlist.size()));
             returnValue.put("info", "额外算一下分数，该情况下单个题目并非十分");
         } else {
             returnValue.put("status", true);
-            returnValue.put("data", GetRandomSubArray.getRandomArray(qlist, 10));
+            returnValue.put("data", GetSubArray.getRandomArray(qlist, 10));
         }
         return returnValue;
     }

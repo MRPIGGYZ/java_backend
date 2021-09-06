@@ -32,8 +32,9 @@ public class EntityDetailsController implements SimplifyData {
         try {
             JSONObject gooddata = GetInstanceByUri.GetRawData(uri);
             JSONObject data = (JSONObject) JSON.toJSON(response.get("data"));
-            System.out.println(gooddata);
+//            System.out.println(gooddata);
             data = Simplify(data, gooddata);
+            System.out.println(data);
             String username = (String) req.getAttribute("userName");
             User user = userDao.getUserByname(username).get(0);
             String history = user.getEntityHistory();

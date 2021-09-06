@@ -20,6 +20,7 @@ public class QuestionRecommandation {
     private UserDao userDao;
     @GetMapping(path="/get")
     public @ResponseBody JSONObject getFiveQuestions (HttpServletRequest req) {
+        
         return null;
     }
 
