@@ -18,17 +18,17 @@ public class User implements Serializable {
     private String password;
     @Column(name="questionSearchHistory")
     private String questionSearchHistory;
-    @Column(name="questionFaults")
+    @Column(name="questionFaults", columnDefinition = "TEXT")
     private String questionFaults;
-    @Column(name="questionCollection")
+    @Column(name="questionCollection", columnDefinition = "TEXT")
     private String questionCollection;
-    @Column(name="questionHistory")
+    @Column(name="questionHistory", columnDefinition = "TEXT")
     private String questionHistory;
     @Column(name="entitySearchHistory")
     private String entitySearchHistory;
-    @Column(name="entityCollection")
+    @Column(name="entityCollection", columnDefinition = "TEXT")
     private String entityCollection;
-    @Column(name="entityHistory")
+    @Column(name="entityHistory", columnDefinition = "TEXT")
     private String entityHistory;
     @Column(name="token")
     private String token;

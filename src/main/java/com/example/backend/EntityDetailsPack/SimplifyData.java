@@ -17,7 +17,6 @@ public interface SimplifyData {
             }
         }
         data.put("property", gooddata.getJSONArray("entity_features"));
-        data.put("entity_type", gooddata.get("entity_type"));
         data.put("content", afterDrop);
         return data;
     }
