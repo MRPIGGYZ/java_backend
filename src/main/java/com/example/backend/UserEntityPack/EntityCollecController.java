@@ -38,14 +38,14 @@ public class EntityCollecController {
         return returnValue;
     }
     @GetMapping(path="/remove")
-    public @ResponseBody JSONObject CancelCollect (HttpServletRequest req, @RequestParam String label) {
+    public @ResponseBody JSONObject CancelCollect (HttpServletRequest req, @RequestParam String uri) {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
         String[] collections = user.getEntityCollection().split("##");
         String afterDelete = "";
         for (String i : collections) {
-            if (i.equals(label)) {
+            if (i.contains(uri)) {
                 continue;
             }
             afterDelete = afterDelete + i + "##";
