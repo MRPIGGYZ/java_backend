@@ -26,12 +26,7 @@ public class EntityCollecController {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-        String collections = user.getEntityCollection();
-        if (collections == null || collections.equals("")) {
-            collections = course + "%%" + label + "%%" + category + "%%" + uri;
-        } else {
-            collections = course + "%%" + label + "%%" + category + "%%" + uri + "##" + collections;
-        }
+        String collections = StringSplit.UpdateEntityHistory(user.getEntityCollection(), course, label, category, uri);
         user.setEntityCollection(collections);
         userDao.save(user);
         returnValue.put("status", true);

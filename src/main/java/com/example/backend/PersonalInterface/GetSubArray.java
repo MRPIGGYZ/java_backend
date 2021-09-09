@@ -2,6 +2,7 @@ package com.example.backend.PersonalInterface;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.backend.QuestionSearchPack.QuestionFilter;
 
 import java.util.*;
 
@@ -27,6 +28,28 @@ public interface GetSubArray {
         Random rd = new Random(t);
         Collections.shuffle(array, rd);
         return (JSONArray) JSONArray.parse(array.subList(0, number).toString());
+    }
+
+    static JSONArray convertToArray (String content, String collection) {
+        String[] contents = content.split("##");
+        JSONArray data = new JSONArray();
+        for (String i : contents) {
+            try {
+                JSONObject obj = new JSONObject();
+                String[] tmp = i.split("%%");
+                obj.put("qAnswer", tmp[0]);
+                obj.put("id", tmp[1]);
+                obj.put("qBody", tmp[2]);
+                JSONObject thisone = QuestionFilter.QuestDivision(obj);
+                String flag = "1";
+                if (collection==null||!collection.contains(tmp[1])) flag = "0";
+                thisone.put("star", flag);
+                data.add(thisone);
+            } catch (Exception e) {
+                continue;
+            }
+        }
+        return data;
     }
 
     static JSONArray getSperCourseArray (JSONArray array, String course) {

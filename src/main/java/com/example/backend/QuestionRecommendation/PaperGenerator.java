@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.backend.LinkInstancePack.linkInstanceController;
 import com.example.backend.PersonalInterface.GetSubArray;
 import com.example.backend.QuestionSearchPack.QuestionSearchController;
+import com.example.backend.User.User;
 import com.example.backend.User.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,9 +23,12 @@ public class PaperGenerator {
     private UserDao userDao;
     @GetMapping(path="/get")
     public @ResponseBody
-    JSONObject getPaper (HttpServletRequest req, @RequestParam String context, @RequestParam String course) {
+    JSONObject getPaper (HttpServletRequest req, @RequestParam String context, @RequestParam String course, @RequestParam String number) {
         JSONArray results;
+        Integer num = Integer.parseInt(number);
         JSONObject returnValue = new JSONObject();
+        String name = (String) req.getAttribute("userName");
+        User user = userDao.getUserByname(name).get(0);
         try {
             results = linkInstanceController.getLinkedInfo(context, course);
         } catch (Exception e) {
@@ -34,21 +38,13 @@ public class PaperGenerator {
         }
         Integer length = results.size();
         JSONArray qlist = new JSONArray();
-//        Integer[] split = GetRandomSubArray.getIntegerArray(length);
-//        for (int i=0; i<length; i++) {
-//            System.out.println(split[i]);
-//        }
         for (int i=0; i<length; i++) {
             JSONObject data = results.getJSONObject(i);
-            qlist.addAll(QuestionSearchController.getQuestionList(data.getString("entity")));
+            qlist.addAll(QuestionSearchController.getQuestionList(data.getString("entity"), user.getQuestionCollection()));
         }
-        if (qlist.size() < 5) {
+        if (qlist.size() < num) {
             returnValue.put("status", false);
             returnValue.put("data", "您搜索的知识点似乎有点冷门，尝试再加一些关键词或换一个科目搜索吧");
-        } else if (qlist.size() < 10) {
-            returnValue.put("status", true);
-            returnValue.put("data", GetSubArray.getRandomArray(qlist, qlist.size()));
-            returnValue.put("info", "额外算一下分数，该情况下单个题目并非十分");
         } else {
             returnValue.put("status", true);
             returnValue.put("data", GetSubArray.getRandomArray(qlist, 10));

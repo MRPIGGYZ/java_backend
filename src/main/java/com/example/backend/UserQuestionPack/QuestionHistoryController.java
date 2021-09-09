@@ -2,6 +2,8 @@ package com.example.backend.UserQuestionPack;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.backend.PersonalInterface.GetSubArray;
+import com.example.backend.PersonalInterface.StringSplit;
 import com.example.backend.QuestionSearchPack.QuestionFilter;
 import com.example.backend.User.User;
 import com.example.backend.User.UserDao;
@@ -25,13 +27,8 @@ public class QuestionHistoryController {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-        String collections = user.getQuestionHistory();
-        if (collections == null || collections.equals("")) {
-            collections = qAnswer + "%%" + id + "%%" + qBody;
-        } else {
-            collections = qAnswer + "%%" + id + "%%" + qBody + "##" + collections;
-        }
-        user.setQuestionHistory(collections);
+        String history = StringSplit.UpdateQuestionList(user.getQuestionHistory(), qAnswer, id, qBody);
+        user.setQuestionHistory(history);
         userDao.save(user);
         returnValue.put("status", true);
         return returnValue;
@@ -41,9 +38,15 @@ public class QuestionHistoryController {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-        String[] collections = user.getQuestionHistory().split("##");
+        String[] history;
+        try {
+            history = user.getQuestionHistory().split("##");
+        } catch (Exception e) {
+            returnValue.put("status", false);
+            return returnValue;
+        }
         String afterDelete = "";
-        for (String i : collections) {
+        for (String i : history) {
             if (i.contains(id)) {
                 continue;
             }
@@ -60,16 +63,29 @@ public class QuestionHistoryController {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-        String[] collections = user.getQuestionHistory().split("##");
+        String[] history;
+        try {
+            history = user.getQuestionHistory().split("##");
+        } catch (Exception e) {
+            returnValue.put("data", new JSONArray());
+            returnValue.put("status", false);
+            return returnValue;
+        }
         JSONArray data = new JSONArray();
-        for (String i : collections) {
+        for (String i : history) {
             try {
                 JSONObject obj = new JSONObject();
                 String[] tmp = i.split("%%");
                 obj.put("qAnswer", tmp[0]);
                 obj.put("id", tmp[1]);
                 obj.put("qBody", tmp[2]);
-                data.add(QuestionFilter.QuestDivision(obj));
+                String flag = "1";
+                if (user.getQuestionCollection()==null||!user.getQuestionCollection().contains(tmp[1])) {
+                    flag = "0";
+                }
+                JSONObject thisone = QuestionFilter.QuestDivision(obj);
+                thisone.put("star", flag);
+                data.add(thisone);
             } catch (Exception e) {
                 continue;
             }

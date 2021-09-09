@@ -51,7 +51,30 @@ public class MainController {
             user.setPassword(PasswordEncoder.encode(newpassword));
             userDao.save(user);
             returnValue.put("status", true);
-            returnValue.put("data", "修改成功");
+            returnValue.put("data", "密码修改成功");
+        }
+        return returnValue;
+    }
+    @PassToken
+    @PostMapping(path="/forgetpassword")
+    public @ResponseBody JSONObject forgetPassword (@RequestParam String name
+            , @RequestParam String email, @RequestParam String newpassword) {
+        JSONObject returnValue = new JSONObject();
+        List<User> list = userDao.getUserByname(name);
+        if (list.isEmpty()) {
+            returnValue.put("status", false);
+            returnValue.put("data", "用户名不存在");
+            return returnValue;
+        }
+        User user = list.get(0);
+        if (user.getEmail().equals(email)) {
+            user.setPassword(PasswordEncoder.encode(newpassword));
+            userDao.save(user);
+            returnValue.put("status", true);
+            returnValue.put("data", "密码修改成功");
+        } else {
+            returnValue.put("status", false);
+            returnValue.put("data", "邮箱验证失败");
         }
         return returnValue;
     }

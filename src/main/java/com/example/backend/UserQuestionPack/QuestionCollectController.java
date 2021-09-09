@@ -2,6 +2,7 @@ package com.example.backend.UserQuestionPack;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.backend.PersonalInterface.StringSplit;
 import com.example.backend.QuestionSearchPack.QuestionFilter;
 import com.example.backend.User.User;
 import com.example.backend.User.UserDao;
@@ -20,12 +21,7 @@ public class QuestionCollectController {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-        String collections = user.getQuestionCollection();
-        if (collections == null || collections.equals("")) {
-            collections = qAnswer + "%%" + id + "%%" + qBody;
-        } else {
-            collections = qAnswer + "%%" + id + "%%" + qBody + "##" + collections;
-        }
+        String collections = StringSplit.UpdateQuestionList(user.getQuestionCollection(), qAnswer, id, qBody);
         user.setQuestionCollection(collections);
         userDao.save(user);
         returnValue.put("status", true);
@@ -55,21 +51,30 @@ public class QuestionCollectController {
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-            String[] collections = user.getQuestionCollection().split("##");
-            JSONArray data = new JSONArray();
-            for (String i : collections) {
-                try {
-                    JSONObject obj = new JSONObject();
-                    String[] tmp = i.split("%%");
-                    obj.put("qAnswer", tmp[0]);
-                    obj.put("id", tmp[1]);
-                    obj.put("qBody", tmp[2]);
-                    data.add(QuestionFilter.QuestDivision(obj));
-                } catch (Exception e) {
-                    continue;
-                }
+        String[] collections;
+        try {
+            collections = user.getQuestionCollection().split("##");
+        } catch (Exception e) {
+            returnValue.put("data", null);
+            returnValue.put("status", false);
+            return returnValue;
+        }
+        JSONArray data = new JSONArray();
+        for (String i : collections) {
+            try {
+                JSONObject obj = new JSONObject();
+                String[] tmp = i.split("%%");
+                obj.put("qAnswer", tmp[0]);
+                obj.put("id", tmp[1]);
+                obj.put("qBody", tmp[2]);
+                JSONObject thisone = QuestionFilter.QuestDivision(obj);
+                thisone.put("star", "1");
+                data.add(thisone);
+            } catch (Exception e) {
+                continue;
             }
-            returnValue.put("data", data);
+        }
+        returnValue.put("data", data);
         returnValue.put("status", true);
         return returnValue;
     }
