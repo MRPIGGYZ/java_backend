@@ -7,6 +7,7 @@ import com.example.backend.GetInstanceByUriPack.GetCourseName;
 import com.example.backend.GetInstanceByUriPack.GetInstanceByUri;
 import com.example.backend.PersonalInterface.BackendLogin;
 import com.example.backend.PersonalInterface.QuickMap;
+import com.example.backend.PersonalInterface.StringSplit;
 import com.example.backend.User.User;
 import com.example.backend.User.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 @RequestMapping(path="/infoByInstanceName")
@@ -34,21 +36,17 @@ public class EntityDetailsController implements SimplifyData {
         try {
             JSONObject gooddata = GetInstanceByUri.GetRawData(uri);
             JSONObject data = (JSONObject) JSON.toJSON(response.get("data"));
-            data = Simplify(data, gooddata); //这里有待修改，使用gooddata拼接是不合适的，之后需要完善对data的过滤函数
+            data = Simplify(data, gooddata);
             if (category.equals("")) {
                 category = getCategory(data.getJSONArray("property"), label);
             }
             data.put("category", category);
             data.put("course", course);
             data.put("uri", uri);
+
             String username = (String) req.getAttribute("userName");
             User user = userDao.getUserByname(username).get(0);
-            String history = user.getEntityHistory();
-            if (history == null || history.equals("")) {
-                history = course + "%%" + label + "%%" + category + "%%" + uri;
-            } else {
-                history = course + "%%" + label + "%%" + category + "%%" + uri + "##" + history;
-            }
+            String history = StringSplit.UpdateEntityHistory(user.getEntityHistory(), course, label, category, uri);
             user.setEntityHistory(history);
             userDao.save(user);
             if (user.getEntityCollection() == null || !user.getEntityCollection().contains(uri)) {

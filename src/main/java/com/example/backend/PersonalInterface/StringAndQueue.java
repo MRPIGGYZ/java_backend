@@ -10,10 +10,18 @@ public interface StringAndQueue {
         if (History == null) {
             return tmpName;
         }
-        if (History.split("\\|").length >= 10) {
-            System.out.println(History);
-            History = History.substring(0 , History.lastIndexOf("|"));
+        String result = "";
+        String []history = History.split("\\|");
+        for (String i : history) {
+            if (i.contains(tmpName)) {
+                continue;
+            }
+            result = result + "|" + i;
         }
-        return tmpName + "|" + History;
+        result = tmpName + result;
+        if (result.split("\\|").length >= 30) {
+            result = result.substring(0 , result.lastIndexOf("|"));
+        }
+        return result;
     }
 }

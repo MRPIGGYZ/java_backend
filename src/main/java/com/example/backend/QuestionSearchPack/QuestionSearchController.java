@@ -7,6 +7,7 @@ import com.example.backend.JwtUtils.PassToken;
 import com.example.backend.PersonalInterface.BackendLogin;
 import com.example.backend.PersonalInterface.QuickMap;
 import com.example.backend.PersonalInterface.StringAndQueue;
+import com.example.backend.PersonalInterface.StringSplit;
 import com.example.backend.User.User;
 import com.example.backend.User.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,14 @@ public class QuestionSearchController implements QuickMap, BackendLogin, Questio
         user.setQuestionSearchHistory(StringAndQueue.appendFromString(uriName, user.getQuestionSearchHistory()));
         userDao.save(user);
         try {
-            JSONArray data = getQuestionList(uriName);
+            JSONArray data = getQuestionList(uriName, user.getQuestionCollection());
+            for (int i=0; i<data.size(); i++) {
+                JSONObject thisone = data.getJSONObject(i);
+                String qBody = thisone.getString("qBody") + "A." + thisone.getString("A") + "B." + thisone.getString("B") + "C." + thisone.getString("C") + "D." + thisone.getString("D");
+                String history = StringSplit.UpdateQuestionList(user.getQuestionHistory(), thisone.getString("qAnswer"), thisone.getString("id"), qBody);
+                user.setQuestionHistory(history);
+                userDao.save(user);
+            }
             returnValue.put("status", true);
             returnValue.put("data", data);
         } catch (Exception e) {
@@ -45,15 +53,14 @@ public class QuestionSearchController implements QuickMap, BackendLogin, Questio
         return returnValue;
     }
     @PassToken
-    public static JSONArray getQuestionList (String uriName) {
-        System.out.println(uriName);
+    public static JSONArray getQuestionList (String uriName, String collection) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/questionListByUriName?uriName={uriName}&id={id}";
         if (id == null) id = BackendLogin.getOpeneduID();
         JSONObject response = restTemplate.getForObject(url, JSONObject.class, QuickMap.createMap("uriName", uriName, "id", id));
         try {
             JSONArray ja = (JSONArray) JSON.toJSON(response.get("data"));
-            JSONArray afterDrop = QuestionFilter.DropNChoice(ja);
+            JSONArray afterDrop = QuestionFilter.DropNChoice(ja, collection);
             return afterDrop;
         } catch (Exception e) {
             throw e;
@@ -67,23 +74,23 @@ public class QuestionSearchController implements QuickMap, BackendLogin, Questio
         returnValue.put("data", StringAndQueue.getArrFromString(user.getQuestionSearchHistory()));
         return returnValue;
     }
-    public static JSONObject GetSperQuestion (String searchkey, String ID) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/questionListByUriName?uriName={uriName}&id={id}";
-        if (id == null) id = BackendLogin.getOpeneduID();
-        JSONObject response = restTemplate.getForObject(url, JSONObject.class, QuickMap.createMap("uriName", searchkey, "id", id));
-        JSONArray ja = (JSONArray) JSON.toJSON(response.get("data"));
-        System.out.println("received");
-        for (int i=0; i<ja.size(); i++) {
-            JSONObject thisone = (JSONObject) ja.get(i);
-            if (thisone.get("id").toString().equals(ID)) {
-                try {
-                    return QuestionFilter.QuestDivision(thisone);
-                } catch (Exception e) {
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
+//    public static JSONObject GetSperQuestion (String searchkey, String ID) {
+//        RestTemplate restTemplate = new RestTemplate();
+//        String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/questionListByUriName?uriName={uriName}&id={id}";
+//        if (id == null) id = BackendLogin.getOpeneduID();
+//        JSONObject response = restTemplate.getForObject(url, JSONObject.class, QuickMap.createMap("uriName", searchkey, "id", id));
+//        JSONArray ja = (JSONArray) JSON.toJSON(response.get("data"));
+//        System.out.println("received");
+//        for (int i=0; i<ja.size(); i++) {
+//            JSONObject thisone = (JSONObject) ja.get(i);
+//            if (thisone.get("id").toString().equals(ID)) {
+//                try {
+//                    return QuestionFilter.QuestDivision(thisone);
+//                } catch (Exception e) {
+//                    return null;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 }

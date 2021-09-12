@@ -37,7 +37,6 @@ public class EntityHistoryController {
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
         JSONArray data = StringSplit.EntitySplit(user.getEntityHistory());
-        data = GetSubArray.balancing(data, data.size());
         returnValue.put("data", data);
         returnValue.put("status", true);
         return returnValue;
