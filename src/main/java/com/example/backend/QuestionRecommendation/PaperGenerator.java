@@ -31,6 +31,7 @@ public class PaperGenerator {
         User user = userDao.getUserByname(name).get(0);
         try {
             results = linkInstanceController.getLinkedInfo(context, course);
+            System.out.println(results);
         } catch (Exception e) {
             returnValue.put("status", false);
             returnValue.put("data", "openedu break down");
@@ -47,7 +48,7 @@ public class PaperGenerator {
             returnValue.put("data", "您搜索的知识点似乎有点冷门，尝试再加一些关键词或换一个科目搜索吧");
         } else {
             returnValue.put("status", true);
-            returnValue.put("data", GetSubArray.getRandomArray(qlist, 10));
+            returnValue.put("data", GetSubArray.getRandomArray(qlist, num));
         }
         return returnValue;
     }

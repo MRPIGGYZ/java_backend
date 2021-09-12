@@ -6,6 +6,9 @@ import com.alibaba.fastjson.JSONObject;
 public interface QuestionFilter {
     static JSONArray DropNChoice(JSONArray originList, String collection) {
         JSONArray returnValue = new JSONArray();
+        if (collection!=null) {
+            String [] clc = collection.split("##");
+        }
         for (int i=0; i<originList.size(); i++) {
             try {
                 JSONObject thisone = originList.getJSONObject(i);
@@ -46,7 +49,6 @@ public interface QuestionFilter {
         } else {
             throw new Exception();
         }
-//        System.out.println(thisone);
         return thisone;
     }
 }

@@ -2,6 +2,7 @@ package com.example.backend.UserQuestionPack;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.backend.JwtUtils.PassToken;
 import com.example.backend.PersonalInterface.GetSubArray;
 import com.example.backend.PersonalInterface.StringSplit;
 import com.example.backend.QuestionSearchPack.QuestionFilter;
@@ -33,6 +34,13 @@ public class QuestionHistoryController {
         returnValue.put("status", true);
         return returnValue;
     }
+    @PassToken
+    public void addhis (String name, String qAnswer, String id, String qBody) {
+        User user = userDao.getUserByname(name).get(0);
+        String history = StringSplit.UpdateQuestionList(user.getQuestionHistory(), qAnswer, id, qBody);
+        user.setQuestionHistory(history);
+        userDao.save(user);
+    }
     @GetMapping(path="/remove")
     public @ResponseBody JSONObject DeleteHistory (HttpServletRequest req, @RequestParam String id) {
         JSONObject returnValue = new JSONObject();
@@ -47,7 +55,8 @@ public class QuestionHistoryController {
         }
         String afterDelete = "";
         for (String i : history) {
-            if (i.contains(id)) {
+            String splitid = i.split("%%")[1];
+            if (splitid.equals(id)) {
                 continue;
             }
             afterDelete = afterDelete + i + "##";

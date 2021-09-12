@@ -27,7 +27,7 @@ public interface GetSubArray {
         long t = System.currentTimeMillis();
         Random rd = new Random(t);
         Collections.shuffle(array, rd);
-        return (JSONArray) JSONArray.parse(array.subList(0, number).toString());
+        return (JSONArray) JSONArray.parse(array.subList(0, Math.min(number, array.size())).toString());
     }
 
     static JSONArray convertToArray (String content, String collection) {

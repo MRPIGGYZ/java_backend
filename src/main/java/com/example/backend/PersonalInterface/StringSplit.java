@@ -59,25 +59,31 @@ public interface StringSplit {
             return course + "%%" + label + "%%" + category + "%%" + uri;
         }
         String result = "";
+        Integer time = 1;
         for (String i : history) {
             if (i.contains(uri)) {
+                String[] thisone = i.split("%%");
+                if (thisone.length>4) time = Integer.parseInt(thisone[4]);
+                time++;
                 continue;
             }
             result = result + "##" + i;
         }
-        result = course + "%%" + label + "%%" + category + "%%" + uri + result;
+        result = course + "%%" + label + "%%" + category + "%%" + uri + "%%" + time + result;
         return result;
     }
     static String UpdateQuestionList (String historystring, String qAnswer, String id, String qBody) {
         String[] history = null;
         try {
             history = historystring.split("##");
+            if (history[0].equals("")) throw new Exception();
         } catch (Exception e) {
             return qAnswer + "%%" + id + "%%" + qBody;
         }
         String result = "";
         for (String i : history) {
-            if (i.contains(id)) {
+            String splitid = i.split("%%")[1];
+            if (splitid.equals(id)) {
                 continue;
             }
             result = result + "##" + i;

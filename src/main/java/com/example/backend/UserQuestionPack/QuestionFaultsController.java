@@ -41,7 +41,8 @@ public class QuestionFaultsController {
         String[] collections = user.getQuestionFaults().split("##");
         String afterDelete = "";
         for (String i : collections) {
-            if (i.contains(id)) {
+            String splitid = i.split("%%")[1];
+            if (splitid.equals(id)) {
                 continue;
             }
             afterDelete = afterDelete + i + "##";
@@ -59,7 +60,7 @@ public class QuestionFaultsController {
         User user = userDao.getUserByname(name).get(0);
         String[] faults;
         try {
-            faults = user.getQuestionCollection().split("##");
+            faults = user.getQuestionFaults().split("##");
         } catch (Exception e) {
             returnValue.put("data", null);
             returnValue.put("status", false);

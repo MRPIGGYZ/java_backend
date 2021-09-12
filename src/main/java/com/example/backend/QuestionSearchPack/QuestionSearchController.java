@@ -7,6 +7,7 @@ import com.example.backend.JwtUtils.PassToken;
 import com.example.backend.PersonalInterface.BackendLogin;
 import com.example.backend.PersonalInterface.QuickMap;
 import com.example.backend.PersonalInterface.StringAndQueue;
+import com.example.backend.PersonalInterface.StringSplit;
 import com.example.backend.User.User;
 import com.example.backend.User.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,13 @@ public class QuestionSearchController implements QuickMap, BackendLogin, Questio
         userDao.save(user);
         try {
             JSONArray data = getQuestionList(uriName, user.getQuestionCollection());
+            for (int i=0; i<data.size(); i++) {
+                JSONObject thisone = data.getJSONObject(i);
+                String qBody = thisone.getString("qBody") + "A." + thisone.getString("A") + "B." + thisone.getString("B") + "C." + thisone.getString("C") + "D." + thisone.getString("D");
+                String history = StringSplit.UpdateQuestionList(user.getQuestionHistory(), thisone.getString("qAnswer"), thisone.getString("id"), qBody);
+                user.setQuestionHistory(history);
+                userDao.save(user);
+            }
             returnValue.put("status", true);
             returnValue.put("data", data);
         } catch (Exception e) {

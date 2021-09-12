@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 @RequestMapping(path="/infoByInstanceName")
@@ -32,11 +33,10 @@ public class EntityDetailsController implements SimplifyData {
         String url = "http://open.edukg.cn/opedukg/api/typeOpen/open/infoByInstanceName?course={course}&name={name}&id={id}";
         if (id == null) id = BackendLogin.getOpeneduID();
         JSONObject response = restTemplate.getForObject(url, JSONObject.class, QuickMap.createMap("course", course, "name", label, "id", id));
-        System.out.println("chabuduodele");
         try {
             JSONObject gooddata = GetInstanceByUri.GetRawData(uri);
             JSONObject data = (JSONObject) JSON.toJSON(response.get("data"));
-            data = Simplify(data, gooddata); //这里有待修改，使用gooddata拼接是不合适的，之后需要完善对data的过滤函数
+            data = Simplify(data, gooddata);
             if (category.equals("")) {
                 category = getCategory(data.getJSONArray("property"), label);
             }
@@ -49,7 +49,6 @@ public class EntityDetailsController implements SimplifyData {
             String history = StringSplit.UpdateEntityHistory(user.getEntityHistory(), course, label, category, uri);
             user.setEntityHistory(history);
             userDao.save(user);
-
             if (user.getEntityCollection() == null || !user.getEntityCollection().contains(uri)) {
                 returnValue.put("star", "0");
             } else {

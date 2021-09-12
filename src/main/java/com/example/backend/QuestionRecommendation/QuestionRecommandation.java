@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Controller
 @RequestMapping(path="/question/recommandation")
@@ -27,15 +24,64 @@ public class QuestionRecommandation {
     @Autowired
     private UserDao userDao;
     @GetMapping(path="/get")
-    public @ResponseBody JSONObject getSomeQuestions (HttpServletRequest req, @RequestParam String number) { //不能少于8个，建议8-10
+    public @ResponseBody JSONObject getSomeQuestions (HttpServletRequest req, @RequestParam String number) { //建议6
         Integer num = Integer.parseInt(number);
         JSONObject returnValue = new JSONObject();
         String name = (String) req.getAttribute("userName");
         User user = userDao.getUserByname(name).get(0);
-        JSONArray data = getQuestion(user, num);
+        JSONArray data = getQuestion2(user, num);
         returnValue.put("data", data);
         returnValue.put("status", true);
         return returnValue;
+    }
+    @PassToken
+    public JSONArray getQuestion2 (User user, Integer num) {
+        JSONArray data = new JSONArray();
+        String entityHis = user.getEntityHistory();
+        String entitysearch= user.getEntitySearchHistory();
+        String questionsearch= user.getQuestionSearchHistory();
+        String faults = user.getQuestionFaults();
+        String collection = user.getQuestionCollection();
+        String history = user.getQuestionHistory();
+        String keywords = "";
+        if (entitysearch!=null && entitysearch!="") {
+            keywords = keywords + "|" + entitysearch;
+        }
+        if (questionsearch!=null && questionsearch!="") {
+            keywords = keywords + "|" + questionsearch;
+        }
+        if (entityHis!=null && entityHis!="") {
+            String [] tmp = entityHis.split("##");
+            for (String i : tmp) {
+                if (i.split("%%").length>4) {
+                    for (int j=0; j<Integer.parseInt(i.split("%%")[4]); j++) {
+                        keywords = keywords + "|" + i.split("%%")[1];
+                    }
+                } else {
+                    keywords = keywords + "|" + i.split("%%")[1];
+                }
+            }
+        }
+        if (keywords.startsWith("|")) keywords = keywords.substring(1, keywords.length());
+        String direct = "";
+        if (faults!=null && faults!="") {
+            direct += faults;
+        }
+        if (collection!=null && collection!="") {
+            direct = direct + "##" + collection;
+        }
+        if (history!=null && history!="") {
+            direct = direct + "##" + history;
+        }
+        data.addAll(GetSubArray.getRandomArray(GetSubArray.convertToArray(direct, collection), 2));
+        data.addAll(convertSearchToArray(keywords, 3, collection));
+        int random = num - data.size();
+        User datauser = userDao.getUserByname("data").get(0);
+        String extradata = datauser.getEntitySearchHistory();
+        if (extradata != null&&!extradata.equals("")) {
+            data.addAll(convertSearchToArray(datauser.getEntitySearchHistory(), random, collection));
+        }
+        return data;
     }
     @PassToken
     public JSONArray getQuestion (User user, Integer num) {
@@ -47,17 +93,6 @@ public class QuestionRecommandation {
         String collection = user.getQuestionCollection();
         String history = user.getQuestionHistory();
         Integer[] numsplit = new Integer[5];
-//        if (entitycollection!=null && entitycollection!="") {
-//            int length = entitycollection.split("##").length;
-//            if (length < 4) {
-//                numsplit[0] = length;
-//            }
-//            System.out.println("numsplits0:" + numsplit[0]);
-//            data.addAll(convertEntityToArray(entitycollection, numsplit[0], collection));
-//            numsplit[0] = data.size();
-//        } else {
-//            numsplit[0] = 0;
-//        }
         if (entitysearch!=null && entitysearch!="") {
             int length = entitysearch.split("\\|").length;
             if (length < 3) {
@@ -85,11 +120,8 @@ public class QuestionRecommandation {
             if (length < 3) {
                 if (Math.random() < 0.3) numsplit[2] = 0;
                 else numsplit[2] = 1;
-            } else if (length < 5) {
-                numsplit[2] = 1;
             } else {
-                if (Math.random() < 0.2) numsplit[2] = 2;
-                else numsplit[2] = 1;
+                numsplit[2] = 1;
             }
             System.out.println("numsplits2:" + numsplit[2]);
             data.addAll(GetSubArray.getRandomArray(GetSubArray.convertToArray(faults, collection), numsplit[2]));
@@ -165,11 +197,11 @@ public class QuestionRecommandation {
         list.toArray(contents);
         JSONArray data = new JSONArray();
         for (int i=0; i<contents.length; i++) {
-            if (data.size() >= num) break;
             try {
                 JSONArray thisone = QuestionSearchController.getQuestionList(contents[i], collection);
                 System.out.println("thisone:" + contents[i]);
                 data.addAll(GetSubArray.getRandomArray(thisone, 1));
+                if (data.size() >= num) break;
             } catch (Exception e) {
                 System.out.println("无");
                 continue;

@@ -35,7 +35,8 @@ public class QuestionCollectController {
         String[] collections = user.getQuestionCollection().split("##");
         String afterDelete = "";
         for (String i : collections) {
-            if (i.contains(id)) {
+            String splitid = i.split("%%")[1];
+            if (splitid.equals(id)) {
                 continue;
             }
             afterDelete = afterDelete + i + "##";

@@ -35,48 +35,15 @@ public class MainMenuRecommandation {
                 continue;
             }
         }
-//        entityList.addAll(getFakeData(course)); //由于数据可能不足，所以我们先加上一些假数据
-        JSONArray returnArray = new JSONArray();
-        try {
-            returnArray = GetSubArray.getRandomArray(entityList, 25);
-        } catch (Exception e) {
-            returnArray = entityList;
-        }
-        returnArray = GetSubArray.balancing(returnArray, 10);
+        JSONArray returnArray = GetSubArray.getRandomArray(entityList, 12);
         returnValue.put("status", true);
-        returnValue.put("data", returnArray);
+        returnValue.put("data", GetSubArray.getRandomArray(returnArray, 6));
         return returnValue;
     }
 
-    private JSONArray getFakeData (String course) { //返回二十五个虚假的数据
-        if (course.equals("chinese")) {
-            return StringSplit.EntitySplit("");
-        }
-        if (course.equals("math")) {
-            return StringSplit.EntitySplit("");
-        }
-        if (course.equals("english")) {
-            return StringSplit.EntitySplit("");
-        }
-        if (course.equals("physics")) {
-            return StringSplit.EntitySplit("");
-        }
-        if (course.equals("chemistry")) {
-            return StringSplit.EntitySplit("");
-        }
-        if (course.equals("biology")) {
-            return StringSplit.EntitySplit("");
-        }
-        if (course.equals("history")) {
-            return StringSplit.EntitySplit("");
-        }
-        if (course.equals("geo")) {
-            return StringSplit.EntitySplit("");
-        }
-        if (course.equals("politics")) {
-            return StringSplit.EntitySplit("");
-        }
-        return null;
+    private JSONArray getFakeData (String course) { //返回一些假数据
+        User user = userDao.getUserByname("data").get(0);
+        return GetSubArray.getSperCourseArray(StringSplit.EntitySplit(user.getEntityHistory()), course);
     }
 
 }
